@@ -1,0 +1,46 @@
+version: "3.8"
+
+# Staging environment — ports 8010/5010, separate DB
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: learner_db_staging
+    network_mode: "host"
+    environment:
+      POSTGRES_USER: learner_service
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: learner_metrics_staging
+    volumes:
+      - learner_db_staging_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.prod
+    container_name: learner_backend_staging
+    network_mode: "host"
+    env_file:
+      - .env.staging
+    environment:
+      - BACKEND_PORT=8010
+      - ENVIRONMENT=staging
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: learner_frontend_staging
+    network_mode: "host"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+    environment:
+      - FRONTEND_PORT=5010
+
+volumes:
+  learner_db_staging_data:

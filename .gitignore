@@ -1,0 +1,36 @@
+# Environment files (contain secrets)
+.env
+.env.dev
+.env.staging
+.env.prod
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+*.pyc
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env*.local
+
+# Database dumps
+*.dump
+*.sql.gz
+
+# Logs
+*.log
+uvicorn.pid
+uvicorn.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

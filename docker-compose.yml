@@ -1,0 +1,47 @@
+version: "3.8"
+
+# Development: hot-reload, host network, local volumes
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: learner_db
+    network_mode: "host"
+    environment:
+      POSTGRES_USER: learner_service
+      POSTGRES_PASSWORD: learner_dev_password
+      POSTGRES_DB: learner_metrics
+    volumes:
+      - learner_db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: learner_backend
+    network_mode: "host"
+    env_file:
+      - .env
+    environment:
+      - BACKEND_PORT=8201
+      - ENVIRONMENT=development
+    volumes:
+      - ./backend:/app/backend
+      - ./scripts:/app/scripts
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: learner_frontend
+    network_mode: "host"
+    environment:
+      - VITE_API_URL=http://localhost:8201
+      - FRONTEND_PORT=5201
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  learner_db_data:

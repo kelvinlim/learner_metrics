@@ -1,0 +1,27 @@
+version: "3.8"
+
+# Production GREEN — ports 8002/5002
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.prod
+    container_name: learner_backend_green
+    network_mode: "host"
+    env_file:
+      - .env.prod
+    environment:
+      - BACKEND_PORT=8002
+      - ENVIRONMENT=production
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+    container_name: learner_frontend_green
+    network_mode: "host"
+    environment:
+      - FRONTEND_PORT=5002
