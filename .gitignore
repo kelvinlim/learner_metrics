@@ -34,3 +34,7 @@ uvicorn.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Symlinked reference projects
+dept_dashboard
+runway
